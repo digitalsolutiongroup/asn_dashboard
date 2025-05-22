@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Pendidikan ASN | Promotion Readiness</title>
+    <!-- Tailwind CSS from CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-gray-900 text-white min-h-screen" style="background-color: #0D1117;">
+    <!-- Layout Container -->
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="hidden md:flex flex-col w-64 bg-gray-900 border-r border-gray-800 h-full transition-all">
+            <div class="p-4 flex items-center justify-center border-b border-gray-800">
+                <span class="text-xl font-bold text-blue-500" style="color: #297BFF;">AI Pendidikan ASN</span>
+            </div>
+            <nav class="flex-1 overflow-y-auto py-4">
+                <ul class="space-y-2 px-2">
+                    <li>
+                        <a href="/" class="nav-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800">
+                            <i class="fas fa-tachometer-alt w-5 h-5 mr-3"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/curriculum" class="nav-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800">
+                            <i class="fas fa-graduation-cap w-5 h-5 mr-3"></i>
+                            <span>AI Curriculum Builder</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/performance" class="nav-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800">
+                            <i class="fas fa-chart-line w-5 h-5 mr-3"></i>
+                            <span>Lecture Performance</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/promotion" class="nav-link flex items-center px-4 py-3 text-white rounded-lg hover:bg-gray-800 bg-blue-800">
+                            <i class="fas fa-user-tie w-5 h-5 mr-3"></i>
+                            <span>Promotion Readiness</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/analytics" class="nav-link flex items-center px-4 py-3 text-gray-300 rounded-lg hover:bg-gray-800">
+                            <i class="fas fa-analytics w-5 h-5 mr-3"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            <div class="p-4 border-t border-gray-800">
+                <div class="flex items-center">
+                    <img src="https://pixabay.com/get/g85c2519eab622c2b0cb2078c6e06127591a885ed2f82c9e861a9782b66dfe653804c892fa38a5b9a82ed3e38b2ca0b5fbeaae3f690158ad6285a53799b398624_1280.jpg" alt="User" class="w-10 h-10 rounded-full mr-3">
+                    <div>
+                        <p class="text-sm font-medium">Budi Santoso</p>
+                        <p class="text-xs text-gray-400">Administrator</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Navigation Bar -->
+            <header class="bg-gray-900 border-b border-gray-800 shadow-md">
+                <div class="flex items-center justify-between px-4 py-3">
+                    <div class="flex items-center">
+                        <button id="menu-toggle" class="md:hidden text-white mr-4">
+                            <i class="fas fa-bars text-xl"></i>
+                        </button>
+                        <h1 class="text-xl font-bold text-blue-500 md:hidden" style="color: #297BFF;">AI Pendidikan ASN</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button id="notification-btn" class="text-gray-300 hover:text-white focus:outline-none">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span id="notification-indicator" class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                            <!-- Notification Panel -->
+                            <div id="notification-panel" class="hidden absolute right-0 mt-2 w-80 bg-gray-800 rounded-lg shadow-lg z-50 border border-gray-700">
+                                <div class="p-3 border-b border-gray-700">
+                                    <h3 class="text-lg font-semibold">Notifikasi</h3>
+                                </div>
+                                <div class="max-h-64 overflow-y-auto">
+                                    <div class="p-3 border-b border-gray-700 hover:bg-gray-700">
+                                        <p class="text-sm font-medium">Pelatihan baru tersedia</p>
+                                        <p class="text-xs text-gray-400">2 jam yang lalu</p>
+                                    </div>
+                                    <div class="p-3 border-b border-gray-700 hover:bg-gray-700">
+                                        <p class="text-sm font-medium">Evaluasi kinerja selesai</p>
+                                        <p class="text-xs text-gray-400">Kemarin</p>
+                                    </div>
+                                    <div class="p-3 hover:bg-gray-700">
+                                        <p class="text-sm font-medium">Pengumuman rapat koordinasi</p>
+                                        <p class="text-xs text-gray-400">3 hari yang lalu</p>
+                                    </div>
+                                </div>
+                                <div class="p-2 text-center border-t border-gray-700">
+                                    <a href="#" class="text-sm text-blue-500 hover:text-blue-400">Lihat semua notifikasi</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="relative">
+                            <img src="https://pixabay.com/get/g85c2519eab622c2b0cb2078c6e06127591a885ed2f82c9e861a9782b66dfe653804c892fa38a5b9a82ed3e38b2ca0b5fbeaae3f690158ad6285a53799b398624_1280.jpg" alt="User" class="w-8 h-8 rounded-full">
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Content -->
+            <main class="flex-1 overflow-y-auto bg-gray-900 p-4" style="background-color: #0D1117;">
+                <div class="max-w-7xl mx-auto">
+                    <!-- Promotion Header -->
+                    <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+                        <h2 class="text-2xl font-bold">Promotion Readiness</h2>
+                        <div class="mt-3 md:mt-0">
+                            <div class="flex space-x-2">
+                                <select class="bg-gray-800 text-white px-4 py-2 rounded-lg border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <option value="all">Semua Departemen</option>
+                                    <option value="hr">SDM</option>
+                                    <option value="policy">Kebijakan</option>
+                                    <option value="digital">Digital</option>
+                                    <option value="admin">Administrasi</option>
+                                </select>
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300" style="background-color: #297BFF;">
+                                    <i class="fas fa-filter mr-2"></i> Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Promotion Statistics Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 transition-all hover:border-blue-500 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">ASN Siap Promosi</h3>
+                                <div class="bg-blue-500 p-3 rounded-lg" style="background-color: #297BFF;">
+                                    <i class="fas fa-user-tie text-white"></i>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold mb-2">48</p>
+                            <p class="text-sm text-gray-400 flex items-center">
+                                <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                                12% dari kuartal sebelumnya
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 transition-all hover:border-blue-500 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">Posisi Tersedia</h3>
+                                <div class="bg-green-500 p-3 rounded-lg">
+                                    <i class="fas fa-briefcase text-white"></i>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold mb-2">23</p>
+                            <p class="text-sm text-gray-400 flex items-center">
+                                <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                                5 posisi baru bulan ini
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 transition-all hover:border-blue-500 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">Rata-rata Skor</h3>
+                                <div class="bg-purple-500 p-3 rounded-lg">
+                                    <i class="fas fa-star text-white"></i>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold mb-2">82/100</p>
+                            <p class="text-sm text-gray-400 flex items-center">
+                                <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                                4% peningkatan dari tahun lalu
+                            </p>
+                        </div>
+                        
+                        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 transition-all hover:border-blue-500 card-hover">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="text-lg font-semibold">Program Mentoring</h3>
+                                <div class="bg-yellow-500 p-3 rounded-lg">
+                                    <i class="fas fa-users text-white"></i>
+                                </div>
+                            </div>
+                            <p class="text-3xl font-bold mb-2">15</p>
+                            <p class="text-sm text-gray-400 flex items-center">
+                                <i class="fas fa-arrow-up text-green-500 mr-1"></i>
+                                3 program baru ditambahkan
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Promotion Candidates Table -->
+                    <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700 mb-6">
+                        <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
+                            <h3 class="text-xl font-semibold">Kandidat Promosi</h3>
+                            <div class="mt-3 md:mt-0 flex">
+                                <div class="relative mr-2">
+                                    <input type="text" placeholder="Cari ASN..." class="bg-gray-700 text-white px-4 py-2 rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <button class="absolute right-3 top-2 text-gray-400">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                <button class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-300" style="background-color: #297BFF;">
+                                    Ekspor Data
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Nama ASN</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Jabatan Saat Ini</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Potensi Jabatan</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Skor Kesiapan</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <img class="h-10 w-10 rounded-full mr-3" src="https://pixabay.com/get/g934058592d6a65a22e91ee6340927e1ea58a6824a144337a266c69105b5356792fbf26b0224811d3aeeffff9d8bcf0215165c80af393fe300d67c29104c0e465_1280.jpg" alt="Profile">
+                                                <div>
+                                                    <div class="text-sm font-medium">Dewi Kartika</div>
+                                                    <div class="text-xs text-gray-400">ID: ASN-35782</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Kepala Seksi Pengembangan</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Kepala Bidang Pengembangan</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                                                    <div class="bg-green-500 h-2.5 rounded-full" style="width: 92%"></div>
+                                                </div>
+                                                <span class="text-xs">92%</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900 text-green-300">Siap Promosi</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <button class="text-blue-500 hover:text-blue-400 mr-3" style="color: #297BFF;"><i class="fas fa-eye"></i></button>
+                                            <button class="text-green-500 hover:text-green-400"><i class="fas fa-check-circle"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <img class="h-10 w-10 rounded-full mr-3" src="https://pixabay.com/get/ga79176cddb5e3f0e4131c6768ea5337ca0058ce099f7bf235d13677fbcbe6c28987dc09f60b9e77596e47e4d2bc0e2e431120b285ec397f8db6187ae2f2610f1_1280.jpg" alt="Profile">
+                                                <div>
+                                                    <div class="text-sm font-medium">Rahmat Hidayat</div>
+                                                    <div class="text-xs text-gray-400">ID: ASN-42391</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Analis Kebijakan</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Analis Kebijakan Utama</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                                                    <div class="bg-blue-500 h-2.5 rounded-full" style="width: 85%; background-color: #297BFF;"></div>
+                                                </div>
+                                                <span class="text-xs">85%</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-900 text-blue-300">Potensial</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <button class="text-blue-500 hover:text-blue-400 mr-3" style="color: #297BFF;"><i class="fas fa-eye"></i></button>
+                                            <button class="text-green-500 hover:text-green-400"><i class="fas fa-check-circle"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <img class="h-10 w-10 rounded-full mr-3" src="https://pixabay.com/get/g8af0280d0fcfa2885c869fc56fcb452ff29d69575fd66d3a21f42858dab1fdc66dd4aa7e813c7ab3b32a104ed7ba355744d15b74e36ae8ed5fb9fc59e6b2490b_1280.jpg" alt="Profile">
+                                                <div>
+                                                    <div class="text-sm font-medium">Aditya Nugroho</div>
+                                                    <div class="text-xs text-gray-400">ID: ASN-29846</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Pengembang Teknologi</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Kepala Seksi Pengembangan TI</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                                                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 78%"></div>
+                                                </div>
+                                                <span class="text-xs">78%</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-300">Dalam Pengembangan</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <button class="text-blue-500 hover:text-blue-400 mr-3" style="color: #297BFF;"><i class="fas fa-eye"></i></button>
+                                            <button class="text-green-500 hover:text-green-400"><i class="fas fa-check-circle"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <img class="h-10 w-10 rounded-full mr-3" src="https://pixabay.com/get/gec2979f9ac000e80b8f9c3d13eea6d0687e6bac09c4c81e4b7a9f7ef08e9dbb7abadb9ca7c93a2137a861728897b7a44f7defcc2ec0adfaec03276dcb1de21f8_1280.jpg" alt="Profile">
+                                                <div>
+                                                    <div class="text-sm font-medium">Siti Rahayu</div>
+                                                    <div class="text-xs text-gray-400">ID: ASN-18723</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Kepala Bidang Administrasi</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Kepala Biro Administrasi</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                                                    <div class="bg-green-500 h-2.5 rounded-full" style="width: 89%"></div>
+                                                </div>
+                                                <span class="text-xs">89%</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-900 text-green-300">Siap Promosi</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <button class="text-blue-500 hover:text-blue-400 mr-3" style="color: #297BFF;"><i class="fas fa-eye"></i></button>
+                                            <button class="text-green-500 hover:text-green-400"><i class="fas fa-check-circle"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <img class="h-10 w-10 rounded-full mr-3" src="https://pixabay.com/get/g85c2519eab622c2b0cb2078c6e06127591a885ed2f82c9e861a9782b66dfe653804c892fa38a5b9a82ed3e38b2ca0b5fbeaae3f690158ad6285a53799b398624_1280.jpg" alt="Profile">
+                                                <div>
+                                                    <div class="text-sm font-medium">Budi Santoso</div>
+                                                    <div class="text-xs text-gray-400">ID: ASN-57219</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Analis Kebijakan Muda</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">Analis Kebijakan Madya</td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="w-full bg-gray-700 rounded-full h-2.5 mr-2">
+                                                    <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 72%"></div>
+                                                </div>
+                                                <span class="text-xs">72%</span>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-900 text-yellow-300">Dalam Pengembangan</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                            <button class="text-blue-500 hover:text-blue-400 mr-3" style="color: #297BFF;"><i class="fas fa-eye"></i></button>
+                                            <button class="text-green-500 hover:text-green-400"><i class="fas fa-check-circle"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="mt-4 flex justify-between items-center">
+                            <div class="text-sm text-gray-400">
+                                Menampilkan 1-5 dari 48 kandidat
+                            </div>
+                            <div class="flex space-x-2">
+                                <button class="px-3 py-1 bg-gray-700 rounded-md text-gray-300 hover:bg-gray-600">Sebelumnya</button>
+                                <button class="px-3 py-1 bg-blue-500 rounded-md text-white" style="background-color: #297BFF;">1</button>
+                                <button class="px-3 py-1 bg-gray-700 rounded-md text-gray-300 hover:bg-gray-600">2</button>
+                                <button class="px-3 py-1 bg-gray-700 rounded-md text-gray-300 hover:bg-gray-600">3</button>
+                                <button class="px-3 py-1 bg-gray-700 rounded-md text-gray-300 hover:bg-gray-600">Selanjutnya</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Skills Gap Analysis -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+                            <h3 class="text-xl font-semibold mb-4">Skills Gap Analysis</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Kepemimpinan Digital</span>
+                                        <span class="text-sm text-gray-400">85% dari target</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 85%; background-color: #297BFF;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Analisis Data</span>
+                                        <span class="text-sm text-gray-400">68% dari target</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                        <div class="bg-yellow-500 h-2.5 rounded-full" style="width: 68%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Manajemen Proyek</span>
+                                        <span class="text-sm text-gray-400">92% dari target</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 92%"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Komunikasi Strategis</span>
+                                        <span class="text-sm text-gray-400">78% dari target</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                        <div class="bg-blue-500 h-2.5 rounded-full" style="width: 78%; background-color: #297BFF;"></div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="flex justify-between mb-1">
+                                        <span class="text-sm font-medium">Pengembangan Kebijakan</span>
+                                        <span class="text-sm text-gray-400">89% dari target</span>
+                                    </div>
+                                    <div class="w-full bg-gray-700 rounded-full h-2.5">
+                                        <div class="bg-green-500 h-2.5 rounded-full" style="width: 89%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Promotion Timeline -->
+                        <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+                            <h3 class="text-xl font-semibold mb-4">Timeline Promosi</h3>
+                            <div class="relative">
+                                <!-- Timeline Line -->
+                                <div class="absolute h-full w-0.5 bg-gray-700 left-5"></div>
+                                
+                                <!-- Timeline Items -->
+                                <div class="space-y-6">
+                                    <div class="flex">
+                                        <div class="relative flex items-center justify-center flex-shrink-0 w-10 h-10">
+                                            <div class="absolute w-5 h-5 bg-blue-500 rounded-full" style="background-color: #297BFF;"></div>
+                                        </div>
+                                        <div class="flex-grow ml-4">
+                                            <h4 class="text-sm font-medium">Q3 2023</h4>
+                                            <p class="text-xs text-gray-400 mt-1">Identifikasi kandidat potensial untuk promosi jabatan di seluruh departemen.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="relative flex items-center justify-center flex-shrink-0 w-10 h-10">
+                                            <div class="absolute w-5 h-5 bg-blue-500 rounded-full" style="background-color: #297BFF;"></div>
+                                        </div>
+                                        <div class="flex-grow ml-4">
+                                            <h4 class="text-sm font-medium">Q4 2023</h4>
+                                            <p class="text-xs text-gray-400 mt-1">Program pengembangan khusus untuk 48 ASN potensial yang telah diidentifikasi.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="relative flex items-center justify-center flex-shrink-0 w-10 h-10">
+                                            <div class="absolute w-5 h-5 bg-green-500 rounded-full"></div>
+                                        </div>
+                                        <div class="flex-grow ml-4">
+                                            <h4 class="text-sm font-medium">Q1 2024</h4>
+                                            <p class="text-xs text-gray-400 mt-1">Evaluasi performa dan kesiapan untuk 25 posisi promosi yang tersedia.</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex">
+                                        <div class="relative flex items-center justify-center flex-shrink-0 w-10 h-10">
+                                            <div class="absolute w-5 h-5 bg-gray-600 rounded-full"></div>
+                                        </div>
+                                        <div class="flex-grow ml-4">
+                                            <h4 class="text-sm font-medium">Q2 2024</h4>
+                                            <p class="text-xs text-gray-400 mt-1">Finalisasi promosi untuk 20 ASN terbaik dan penyesuaian struktur organisasi.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Development Plans -->
+                    <div class="bg-gray-800 rounded-lg shadow-lg p-6 border border-gray-700">
+                        <h3 class="text-xl font-semibold mb-4">Rekomendasi Pengembangan dari AI</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div class="bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-blue-500 transition-all duration-300">
+                                <div class="flex items-center mb-3">
+                                    <div class="bg-blue-500 p-2 rounded-full mr-3" style="background-color: #297BFF;">
+                                        <i class="fas fa-graduation-cap text-white"></i>
+                                    </div>
+                                    <h4 class="font-medium">Kepemimpinan Digital</h4>
+                                </div>
+                                <p class="text-sm text-gray-300 mb-3">Program pelatihan intensif 8 minggu untuk meningkatkan kemampuan kepemimpinan di era digital.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Direkomendasikan untuk: 18 ASN</span>
+                                    <button class="text-blue-500 hover:text-blue-400 text-sm" style="color: #297BFF;">Detail</button>
+                                </div>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-blue-500 transition-all duration-300">
+                                <div class="flex items-center mb-3">
+                                    <div class="bg-green-500 p-2 rounded-full mr-3">
+                                        <i class="fas fa-chart-bar text-white"></i>
+                                    </div>
+                                    <h4 class="font-medium">Analisis Data Kebijakan</h4>
+                                </div>
+                                <p class="text-sm text-gray-300 mb-3">Workshop praktis untuk meningkatkan kemampuan analisis data dalam pengambilan keputusan kebijakan.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Direkomendasikan untuk: 24 ASN</span>
+                                    <button class="text-blue-500 hover:text-blue-400 text-sm" style="color: #297BFF;">Detail</button>
+                                </div>
+                            </div>
+                            <div class="bg-gray-700 rounded-lg p-4 border border-gray-600 hover:border-blue-500 transition-all duration-300">
+                                <div class="flex items-center mb-3">
+                                    <div class="bg-purple-500 p-2 rounded-full mr-3">
+                                        <i class="fas fa-users text-white"></i>
+                                    </div>
+                                    <h4 class="font-medium">Mentoring Eksekutif</h4>
+                                </div>
+                                <p class="text-sm text-gray-300 mb-3">Program mentoring one-on-one dengan eksekutif senior untuk ASN dengan potensi tinggi.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-xs text-gray-400">Direkomendasikan untuk: 12 ASN</span>
+                                    <button class="text-blue-500 hover:text-blue-400 text-sm" style="color: #297BFF;">Detail</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/charts.js') }}"></script>
+</body>
+</html>
