@@ -26,8 +26,8 @@ COPY pyproject.toml uv.lock ./
 # Install uv for faster dependency management
 RUN pip install uv
 
-# Install dependencies
-RUN uv pip install --system -r uv.lock
+# Install dependencies using uv sync
+RUN uv sync --frozen --no-dev
 
 # Copy application code
 COPY . .
@@ -45,5 +45,5 @@ EXPOSE 5000
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
     CMD curl -f http://localhost:5000/ || exit 1
 
-# Run the application with Gunicorn
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "main:app"] 
+# Run the application with Gunicorn using uv run
+CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "--workers", "4", "--timeout", "120", "main:app"] 
