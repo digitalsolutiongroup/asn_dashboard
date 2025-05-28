@@ -5,10 +5,12 @@ FROM python:3.11-slim
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     PIP_NO_CACHE_DIR=1 \
-    PIP_DISABLE_PIP_VERSION_CHECK=1
+    PIP_DISABLE_PIP_VERSION_CHECK=1 \
+    UV_CACHE_DIR=/tmp/uv-cache \
+    UV_NO_CACHE=1
 
 # Create non-root user for security
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+RUN groupadd -r appuser && useradd -r -g appuser -m appuser
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -32,8 +34,9 @@ RUN uv sync --frozen --no-dev
 # Copy application code
 COPY . .
 
-# Change ownership to non-root user
-RUN chown -R appuser:appuser /app
+# Create cache directory and change ownership to non-root user
+RUN mkdir -p /tmp/uv-cache && \
+    chown -R appuser:appuser /app /tmp/uv-cache
 
 # Switch to non-root user
 USER appuser
